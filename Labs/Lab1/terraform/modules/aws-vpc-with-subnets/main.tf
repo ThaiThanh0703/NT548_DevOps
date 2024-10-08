@@ -18,3 +18,32 @@ resource "aws_vpc" "this" {
   )
 }
 
+################################################################################
+# Publiс Subnets
+################################################################################
+
+locals {
+  create_public_subnets = local.create_vpc 
+}
+
+resource "aws_subnet" "public" {
+  count = local.create_public_subnets
+  availability_zone                              = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
+  availability_zone_id                           = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
+  cidr_block                                     = element(concat(var.public_subnets, [""]), count.index)
+  map_public_ip_on_launch                        = var.map_public_ip_on_launch
+  vpc_id                                         = aws_vpc.this.vpc_id
+
+  tags = merge(
+    {
+      Name = try(
+        var.public_subnet_names[count.index],
+        format("${var.name}-${var.public_subnet_suffix}-%s", element(var.azs, count.index))
+      )
+    },
+    var.tags,
+    var.public_subnet_tags,
+    lookup(var.public_subnet_tags_per_az, element(var.azs, count.index), {})
+  )
+}
+

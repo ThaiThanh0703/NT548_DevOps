@@ -32,12 +32,6 @@ variable "enable_network_address_usage_metrics" {
   default     = null
 }
 
-variable "use_ipam_pool" {
-  description = "Determines whether IPAM pool is used for CIDR allocation"
-  type        = bool
-  default     = false
-}
-
 variable "vpc_tags" {
   description = "Additional tags for the VPC"
   type        = map(string)
@@ -47,5 +41,45 @@ variable "vpc_tags" {
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Publiс Subnets
+################################################################################
+
+variable "public_subnets" {
+  description = "A list of public subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "map_public_ip_on_launch" {
+  description = "Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is `false`"
+  type        = bool
+  default     = false
+}
+
+variable "public_subnet_names" {
+  description = "Explicit values to use in the Name tag on public subnets. If empty, Name tags are generated"
+  type        = list(string)
+  default     = []
+}
+
+variable "public_subnet_suffix" {
+  description = "Suffix to append to public subnets name"
+  type        = string
+  default     = "public"
+}
+
+variable "public_subnet_tags" {
+  description = "Additional tags for the public subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "public_subnet_tags_per_az" {
+  description = "Additional tags for the public subnets where the primary key is the AZ"
+  type        = map(map(string))
   default     = {}
 }
