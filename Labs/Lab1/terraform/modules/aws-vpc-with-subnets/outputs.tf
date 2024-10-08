@@ -76,33 +76,34 @@ output "private_subnets_cidr_blocks" {
   value       = compact(aws_subnet.private[*].cidr_block)
 }
 
-output "private_subnets_ipv6_cidr_blocks" {
-  description = "List of IPv6 cidr_blocks of private subnets in an IPv6 enabled VPC"
-  value       = compact(aws_subnet.private[*].ipv6_cidr_block)
+################################################################################
+# Default Security Group
+################################################################################
+output "default_sg_id" {
+  description = "The ID of the default security group"
+  value       = aws_security_group.default.id
 }
 
-output "private_nat_gateway_route_ids" {
-  description = "List of IDs of the private nat gateway route"
-  value       = aws_route.private_nat_gateway[*].id
+output "default_sg_name" {
+  description = "The name of the default security group"
+  value       = aws_security_group.default.name
 }
 
-output "private_ipv6_egress_route_ids" {
-  description = "List of IDs of the ipv6 egress route"
-  value       = aws_route.private_ipv6_egress[*].id
+output "default_sg_description" {
+  description = "The description of the default security group"
+  value       = aws_security_group.default.description
 }
 
-output "private_route_table_association_ids" {
-  description = "List of IDs of the private route table association"
-  value       = aws_route_table_association.private[*].id
+################################################################################
+# Internet Gateway
+################################################################################
+
+output "igw_id" {
+  description = "The ID of the Internet Gateway"
+  value       = try(aws_internet_gateway.this[0].id, null)
 }
 
-output "private_network_acl_id" {
-  description = "ID of the private network ACL"
-  value       = try(aws_network_acl.private[0].id, null)
+output "igw_arn" {
+  description = "The ARN of the Internet Gateway"
+  value       = try(aws_internet_gateway.this[0].arn, null)
 }
-
-output "private_network_acl_arn" {
-  description = "ARN of the private network ACL"
-  value       = try(aws_network_acl.private[0].arn, null)
-}
-
