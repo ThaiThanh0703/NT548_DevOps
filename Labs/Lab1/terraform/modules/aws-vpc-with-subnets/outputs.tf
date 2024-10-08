@@ -32,16 +32,6 @@ output "default_route_table_id" {
   value       = try(aws_vpc.this[0].default_route_table_id, null)
 }
 
-output "vpc_instance_tenancy" {
-  description = "Tenancy of instances spin up within VPC"
-  value       = try(aws_vpc.this[0].instance_tenancy, null)
-}
-
-output "vpc_enable_dns_support" {
-  description = "Whether or not the VPC has DNS support"
-  value       = try(aws_vpc.this[0].enable_dns_support, null)
-}
-
 output "vpc_owner_id" {
   description = "The ID of the AWS account that owns the VPC"
   value       = try(aws_vpc.this[0].owner_id, null)

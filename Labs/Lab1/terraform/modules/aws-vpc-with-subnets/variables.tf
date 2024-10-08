@@ -20,18 +20,6 @@ variable "cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "secondary_cidr_blocks" {
-  description = "List of secondary CIDR blocks to associate with the VPC to extend the IP Address pool"
-  type        = list(string)
-  default     = []
-}
-
-variable "instance_tenancy" {
-  description = "A tenancy option for instances launched into the VPC"
-  type        = string
-  default     = "default"
-}
-
 variable "azs" {
   description = "A list of availability zones names or ids in the region"
   type        = list(string)
@@ -48,18 +36,6 @@ variable "use_ipam_pool" {
   description = "Determines whether IPAM pool is used for CIDR allocation"
   type        = bool
   default     = false
-}
-
-variable "ipv4_ipam_pool_id" {
-  description = "(Optional) The ID of an IPv4 IPAM pool you want to use for allocating this VPC's CIDR"
-  type        = string
-  default     = null
-}
-
-variable "ipv4_netmask_length" {
-  description = "(Optional) The netmask length of the IPv4 CIDR you want to allocate to this VPC. Requires specifying a ipv4_ipam_pool_id"
-  type        = number
-  default     = null
 }
 
 variable "vpc_tags" {

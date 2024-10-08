@@ -8,12 +8,7 @@ locals {
 
 resource "aws_vpc" "this" {
   count = local.create_vpc ? 1 : 0
-
-  cidr_block          = var.use_ipam_pool ? null : var.cidr
-  ipv4_ipam_pool_id   = var.ipv4_ipam_pool_id
-  ipv4_netmask_length = var.ipv4_netmask_length
-
-  instance_tenancy                     = var.instance_tenancy
+  cidr_block          = var.cidr
   enable_network_address_usage_metrics = var.enable_network_address_usage_metrics
 
   tags = merge(
