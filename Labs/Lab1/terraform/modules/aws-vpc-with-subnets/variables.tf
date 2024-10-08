@@ -83,3 +83,37 @@ variable "public_subnet_tags_per_az" {
   type        = map(map(string))
   default     = {}
 }
+
+################################################################################
+# Private Subnets
+################################################################################
+
+variable "private_subnets" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_names" {
+  description = "Explicit values to use in the Name tag on private subnets. If empty, Name tags are generated"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_suffix" {
+  description = "Suffix to append to private subnets name"
+  type        = string
+  default     = "private"
+}
+
+variable "private_subnet_tags" {
+  description = "Additional tags for the private subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "private_subnet_tags_per_az" {
+  description = "Additional tags for the private subnets where the primary key is the AZ"
+  type        = map(map(string))
+  default     = {}
+}

@@ -27,7 +27,7 @@ locals {
 }
 
 resource "aws_subnet" "public" {
-  count = local.create_public_subnets
+  count = length(var.public_subnets)
   availability_zone                              = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
   availability_zone_id                           = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
   cidr_block                                     = element(concat(var.public_subnets, [""]), count.index)
@@ -44,6 +44,34 @@ resource "aws_subnet" "public" {
     var.tags,
     var.public_subnet_tags,
     lookup(var.public_subnet_tags_per_az, element(var.azs, count.index), {})
+  )
+}
+
+################################################################################
+# Private Subnets
+################################################################################
+
+locals {
+  create_private_subnets = local.create_vpc
+}
+
+resource "aws_subnet" "private" {
+  count = length(var.private_subnets)
+  availability_zone                              = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
+  availability_zone_id                           = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
+  cidr_block                                     = element(concat(var.private_subnets, [""]), count.index)
+  vpc_id                                         = aws_vpc.this.id
+
+  tags = merge(
+    {
+      Name = try(
+        var.private_subnet_names[count.index],
+        format("${var.name}-${var.private_subnet_suffix}-%s", element(var.azs, count.index))
+      )
+    },
+    var.tags,
+    var.private_subnet_tags,
+    lookup(var.private_subnet_tags_per_az, element(var.azs, count.index), {})
   )
 }
 
