@@ -123,9 +123,9 @@ variable "private_subnet_tags_per_az" {
 ################################################################################
 
 variable "create_igw" {
-  description = "Controls if an Internet Gateway is created for public subnets and the related routes that connect them"
-  type        = bool
-  default     = true
+    description = "Controls if an Internet Gateway is created for public subnets and the related routes that connect them"
+    type        = bool
+   default     = true
 }
 
 variable "igw_tags" {
