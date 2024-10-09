@@ -16,7 +16,7 @@ provider "aws" {
 
 # Use the VPC Module
 module "vpc" {
-  source = "./terraform/modules/aws-vpc-with-subnets"  
+   source = "./terraform/modules/aws-vpc-with-subnets"  
 
   create_vpc                     = true
   name                           = "main_vpc"

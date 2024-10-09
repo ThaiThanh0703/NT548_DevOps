@@ -112,8 +112,8 @@ resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this[0].id 
 
   tags = merge(
-    { "Name" = var.name },
-    var.tags,
-    var.igw_tags,
+  { "Name" = var.name },
+  var.tags,
+  var.igw_tags,
   )
 }
