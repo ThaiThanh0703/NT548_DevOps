@@ -43,11 +43,6 @@ variable "public_subnet_suffix" {
 }
 
 
-variable "internet_gateway_id" {
-  description = "The ID of the Internet Gateway"
-  type        = string
-  default     = ""
-}
 
 variable "create_multiple_public_route_tables" {
   description = "Indicates whether to create a separate route table for each public subnet. Default: `false`"

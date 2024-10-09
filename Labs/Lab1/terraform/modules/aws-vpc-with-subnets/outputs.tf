@@ -37,9 +37,8 @@ output "vpc_owner_id" {
   value       = try(aws_vpc.this[0].owner_id, null)
 }
 
-
 ################################################################################
-# Publiс Subnets
+# Public Subnets
 ################################################################################
 
 output "public_subnets" {
@@ -79,19 +78,20 @@ output "private_subnets_cidr_blocks" {
 ################################################################################
 # Default Security Group
 ################################################################################
+
 output "default_sg_id" {
   description = "The ID of the default security group"
-  value       = aws_security_group.default.id
+  value       = aws_security_group.default[0].id  
 }
 
 output "default_sg_name" {
   description = "The name of the default security group"
-  value       = aws_security_group.default.name
+  value       = aws_security_group.default[0].name  
 }
 
 output "default_sg_description" {
   description = "The description of the default security group"
-  value       = aws_security_group.default.description
+  value       = aws_security_group.default[0].description  
 }
 
 ################################################################################

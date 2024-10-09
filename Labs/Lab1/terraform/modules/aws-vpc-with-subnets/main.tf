@@ -8,7 +8,7 @@ locals {
 
 resource "aws_vpc" "this" {
   count = local.create_vpc ? 1 : 0
-  cidr_block          = var.cidr
+  cidr_block = var.cidr
   enable_network_address_usage_metrics = var.enable_network_address_usage_metrics
 
   tags = merge(
@@ -19,7 +19,7 @@ resource "aws_vpc" "this" {
 }
 
 ################################################################################
-# Publiс Subnets
+# Public Subnets
 ################################################################################
 
 locals {
@@ -28,11 +28,11 @@ locals {
 
 resource "aws_subnet" "public" {
   count = length(var.public_subnets)
-  availability_zone                              = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
-  availability_zone_id                           = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
-  cidr_block                                     = element(concat(var.public_subnets, [""]), count.index)
-  map_public_ip_on_launch                        = var.map_public_ip_on_launch
-  vpc_id                                         = aws_vpc.this.vpc_id
+  availability_zone = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
+  availability_zone_id = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
+  cidr_block = element(concat(var.public_subnets, [""]), count.index)
+  map_public_ip_on_launch = var.map_public_ip_on_launch
+  vpc_id = aws_vpc.this[0].id  
 
   tags = merge(
     {
@@ -57,10 +57,10 @@ locals {
 
 resource "aws_subnet" "private" {
   count = length(var.private_subnets)
-  availability_zone                              = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
-  availability_zone_id                           = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
-  cidr_block                                     = element(concat(var.private_subnets, [""]), count.index)
-  vpc_id                                         = aws_vpc.this.id
+  availability_zone = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) > 0 ? element(var.azs, count.index) : null
+  availability_zone_id = length(regexall("^[a-z]{2}-", element(var.azs, count.index))) == 0 ? element(var.azs, count.index) : null
+  cidr_block = element(concat(var.private_subnets, [""]), count.index)
+  vpc_id = aws_vpc.this[0].id 
 
   tags = merge(
     {
@@ -80,7 +80,8 @@ resource "aws_subnet" "private" {
 ################################################################################
 
 resource "aws_security_group" "default" {
-  vpc_id = aws_vpc.this.id
+  count = local.create_vpc ? 1 : 0  
+  vpc_id = aws_vpc.this[0].id  
 
   ingress {
     from_port   = 0
@@ -97,18 +98,18 @@ resource "aws_security_group" "default" {
   }
 
   tags = {
-    Name = "${var.name}-${aws_vpc.this.id}-default-sg"
+    Name = "${var.name}-${aws_vpc.this[0].id}-default-sg" 
   }
 }
-
 
 ################################################################################
 # Internet Gateway
 ################################################################################
+
 resource "aws_internet_gateway" "this" {
   count = local.create_public_subnets && var.create_igw ? 1 : 0
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.this[0].id 
 
   tags = merge(
     { "Name" = var.name },
