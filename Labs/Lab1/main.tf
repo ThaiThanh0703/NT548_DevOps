@@ -1,20 +1,19 @@
 terraform {
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "~> 5.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
     }
+  }
 }
 
-# Configure the AWS Provider
 provider "aws" {
-    region     = "us-east-1"
-    access_key = var.access_key
-    secret_key = var.secret_key
+  region     = "us-east-1"
+  access_key = var.access_key
+  secret_key = var.secret_key
 }
 
-# Use the VPC Module
+# Module VPC
 module "vpc" {
   source = "./terraform/modules/aws-vpc-with-subnets"
 
@@ -36,9 +35,11 @@ module "vpc" {
   tags = {
     Environment = "Development"
   }
-  
+}
+
+# Module Route Table
 module "route_table" {
-  source = "./terraform/modules/aws-route-table"
+  source                          = "./terraform/modules/aws-route-table"
 
   vpc_id                          = module.vpc.vpc_id
   public_subnet_ids               = module.vpc.public_subnet_ids
@@ -46,16 +47,14 @@ module "route_table" {
   create_multiple_public_route_tables = true
   single_nat_gateway              = false
   nat_gateway_ids                 = ["nat-0123456789abcdef0", "nat-0987654321abcdef0"]
-  internet_gateway_id             = module.vpc.internet_gateway_id
+  internet_gateway_id             = module.vpc.igw_id  
   azs                             = ["us-east-1a", "us-east-1b"]
   name                            = "main_vpc"
-
   public_subnet_suffix            = "public"
   private_subnet_suffix           = "private"
-
   tags = {
     Environment = "Development"
   }
 }
 
-}
+
