@@ -4,19 +4,20 @@ locals {
 }
 
 ################################################################################
-# Publiс Route Table
+# Public Route Table Outputs
 ################################################################################
 output "public_route_table_ids" {
   description = "List of IDs of public route tables"
   value       = local.public_route_table_ids
 }
+
 output "public_route_table_association_ids" {
-  description = "List of IDs of the public route table association"
+  description = "List of IDs of the public route table associations"
   value       = aws_route_table_association.public[*].id
 }
 
 ################################################################################
-# Private Route Table
+# Private Route Table Outputs
 ################################################################################
 output "private_route_table_ids" {
   description = "List of IDs of private route tables"
@@ -24,6 +25,14 @@ output "private_route_table_ids" {
 }
 
 output "private_route_table_association_ids" {
-  description = "List of IDs of the private route table association"
+  description = "List of IDs of the private route table associations"
   value       = aws_route_table_association.private[*].id
+}
+
+################################################################################
+# Internet Gateway Output
+################################################################################
+output "internet_gateway_id" {
+  description = "ID of the internet gateway"
+  value       = var.internet_gateway_id
 }

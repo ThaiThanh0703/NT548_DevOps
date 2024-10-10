@@ -56,6 +56,13 @@ variable "public_route_table_tags" {
   default     = {}
 }
 
+variable "internet_gateway_id" {
+  description = "ID of the Internet Gateway to associate with the public route table"
+  type        = string
+  default     = ""
+}
+
+
 ################################################################################
 # Private Route Table
 ################################################################################
