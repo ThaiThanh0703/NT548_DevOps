@@ -50,12 +50,12 @@ resource "aws_route" "public_internet_gateway" {
 # Private Route Table
 ################################################################################
 locals {
-  nat_gateway_count = var.single_nat_gateway ? 1 : length(var.nat_gateway_ids) # Đảm bảo bạn đã định nghĩa var.nat_gateway_ids
+  nat_gateway_count = var.single_nat_gateway ? 1 : length(var.nat_gateway_ids) 
 }
 
 # Create route tables for private subnets
 resource "aws_route_table" "private" {
-  count = local.nat_gateway_count  # Sử dụng count ở đây
+  count = local.nat_gateway_count  
 
   vpc_id = var.vpc_id
 

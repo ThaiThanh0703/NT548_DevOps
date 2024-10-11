@@ -41,7 +41,7 @@ output "vpc_owner_id" {
 # Public Subnets
 ################################################################################
 
-output "public_subnet_ids" {  # Sửa đổi tên output thành public_subnet_ids
+output "public_subnet_ids" {  
   description = "List of IDs of public subnets"
   value       = aws_subnet.public[*].id
 }
@@ -60,7 +60,7 @@ output "public_subnets_cidr_blocks" {
 # Private Subnets
 ################################################################################
 
-output "private_subnet_ids" {  # Sửa đổi tên output thành private_subnet_ids
+output "private_subnet_ids" {  
   description = "List of IDs of private subnets"
   value       = aws_subnet.private[*].id
 }
@@ -98,12 +98,12 @@ output "default_sg_description" {
 # Internet Gateway
 ################################################################################
 
-output "internet_gateway_id" {  # Đổi tên output thành internet_gateway_id
+output "internet_gateway_id" {  
   description = "The ID of the Internet Gateway"
-  value       = try(aws_internet_gateway.this[0].id, null)  # Chỉnh sửa để lấy ID của Internet Gateway
+  value       = try(aws_internet_gateway.this[0].id, null) 
 }
 
-output "igw_id" {  # Xuất ID của Internet Gateway
+output "igw_id" {  
   description = "The ID of the Internet Gateway"
   value       = try(aws_internet_gateway.this[0].id, null)  
 }

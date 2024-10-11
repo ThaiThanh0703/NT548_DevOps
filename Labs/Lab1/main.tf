@@ -46,7 +46,7 @@ module "route_table" {
   private_subnet_ids              = module.vpc.private_subnet_ids
   create_multiple_public_route_tables = true
   single_nat_gateway              = false
-  nat_gateway_ids                 = ["nat-0123456789abcdef0", "nat-0987654321abcdef0"]
+  nat_gateway_ids                 = module.nat_gateway.natgw_ids
   internet_gateway_id             = module.vpc.igw_id  
   azs                             = ["us-east-1a", "us-east-1b"]
   name                            = "main_vpc"
@@ -55,6 +55,13 @@ module "route_table" {
   tags = {
     Environment = "Development"
   }
+}
+
+module "nat_gateway" {
+  source              = "./terraform/modules/aws-nat-gateway"
+  public_subnet_ids   = module.vpc.public_subnet_ids
+  azs                 = ["us-east-1a", "us-east-1b"]  
+  single_nat_gateway  = true
 }
 
 
