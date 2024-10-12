@@ -1,6 +1,6 @@
 # Module VPC
 module "vpc" {
-  source = "./terraform/modules/aws-vpc-with-subnets"
+  source = "../terraform/modules/aws-vpc-with-subnets"
 
   create_vpc                        = true
   name                              = "main_vpc"
@@ -24,7 +24,7 @@ module "vpc" {
 
 # Module Route Table
 module "route_table" {
-  source                          = "./terraform/modules/aws-route-table"
+  source                          = "../terraform/modules/aws-route-table"
 
   vpc_id                          = module.vpc.vpc_id
   public_subnet_ids               = module.vpc.public_subnet_ids
