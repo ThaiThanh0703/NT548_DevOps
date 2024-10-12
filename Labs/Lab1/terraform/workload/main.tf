@@ -4,24 +4,25 @@
 module "vpc" {
   source = "../modules/aws-vpc-with-subnets"
 
-  create_vpc                        = true
-  name                              = "main_vpc"
-  cidr                              = "10.0.0.0/16"
-  enable_network_address_usage_metrics = true
+  create_vpc = var.create_vpc
+  cidr                             = var.cidr
+  enable_network_address_usage_metrics = var.enable_network_address_usage_metrics
+  azs                           = var.azs
+  
+  public_subnets                    = var.public_subnets
+  map_public_ip_on_launch           = var.map_public_ip_on_launch
+  public_subnet_suffix              = var.public_subnet_suffix
 
-  azs                               = ["us-east-1a", "us-east-1b"]
-  public_subnets                    = ["10.0.0.0/24", "10.0.1.0/24"]
-  map_public_ip_on_launch           = true
-  public_subnet_suffix              = "public"
+  private_subnets                   = var.private_subnets
+  private_subnet_suffix             = var.private_subnet_suffix
 
-  private_subnets                   = ["10.0.2.0/24", "10.0.3.0/24"]
-  private_subnet_suffix             = "private"
+  create_igw                        = var.create_igw
 
-  create_igw                        = true
-
-  tags = {
-    Environment = "Development"
-  }
+  tags = var.tags
+  private_subnet_tags = var.private_subnet_tags
+  public_subnet_tags = var.public_subnet_tags
+  igw_tags = var.igw_tags
+  vpc_tags = var.vpc_tags
 }
 
 
@@ -39,7 +40,7 @@ module "route_table" {
   single_nat_gateway              = false
   nat_gateway_ids                 = module.nat_gateway.natgw_ids
   internet_gateway_id             = module.vpc.igw_id  
-  azs                             = ["us-east-1a", "us-east-1b"]
+  azs                             = var.azs
   name                            = "main_vpc"
   public_subnet_suffix            = "public"
   private_subnet_suffix           = "private"
