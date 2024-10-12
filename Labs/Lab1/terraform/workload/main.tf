@@ -1,6 +1,8 @@
-# Module VPC
+################################################################################
+# VPC
+################################################################################
 module "vpc" {
-  source = "../terraform/modules/aws-vpc-with-subnets"
+  source = "../modules/aws-vpc-with-subnets"
 
   create_vpc                        = true
   name                              = "main_vpc"
@@ -22,9 +24,13 @@ module "vpc" {
   }
 }
 
-# Module Route Table
+
+################################################################################
+# Route Table
+################################################################################
+
 module "route_table" {
-  source                          = "../terraform/modules/aws-route-table"
+  source                          = "../modules/aws-route-table"
 
   vpc_id                          = module.vpc.vpc_id
   public_subnet_ids               = module.vpc.public_subnet_ids
@@ -42,11 +48,48 @@ module "route_table" {
   }
 }
 
+################################################################################
+# NAT Gateway
+################################################################################
 module "nat_gateway" {
-  source              = "./terraform/modules/aws-nat-gateway"
+  source              = "../modules/aws-nat-gateway"
   public_subnet_ids   = module.vpc.public_subnet_ids
   azs                 = ["us-east-1a", "us-east-1b"]  
   single_nat_gateway  = true
+}
+
+################################################################################
+# Public EC2 Instance
+################################################################################
+
+module "public_ec2_instance" {
+  source = "../modules/aws-ec2-instance"
+}
+
+
+################################################################################
+# Private EC2 Instance
+################################################################################
+
+module "private_ec2_instance" {
+  source = "../modules/aws-ec2-instance"
+}
+
+################################################################################
+# Public EC2 Security Group
+################################################################################
+
+module "public_ec2_security_group" {
+  source = "../modules/aws-security-group"
+}
+
+
+################################################################################
+# Private EC2 Security Group
+################################################################################
+
+module "private_ec2_security_group" {
+  source = "../modules/aws-security-group"
 }
 
 
