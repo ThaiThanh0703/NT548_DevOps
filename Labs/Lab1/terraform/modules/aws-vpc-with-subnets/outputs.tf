@@ -98,9 +98,9 @@ output "default_sg_description" {
 # Internet Gateway
 ################################################################################
 
-output "internet_gateway_id" {  
-  description = "The ID of the Internet Gateway"
-  value       = try(aws_internet_gateway.this[0].id, null) 
+output "internet_gateway" {  
+  description = "The name of the Internet Gateway"
+  value       = try(aws_internet_gateway.this[0], null) 
 }
 
 output "igw_id" {  
