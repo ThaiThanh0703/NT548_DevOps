@@ -4,25 +4,24 @@
 module "vpc" {
   source = "../modules/aws-vpc-with-subnets"
 
-  create_vpc = var.create_vpc
-  cidr                             = var.cidr
+  create_vpc                           = var.create_vpc
+  create_igw                           = var.create_igw
+  cidr                                 = var.cidr
   enable_network_address_usage_metrics = var.enable_network_address_usage_metrics
-  azs                           = var.azs
-  
-  public_subnets                    = var.public_subnets
-  map_public_ip_on_launch           = var.map_public_ip_on_launch
-  public_subnet_suffix              = var.public_subnet_suffix
+  azs                                  = var.azs
 
-  private_subnets                   = var.private_subnets
-  private_subnet_suffix             = var.private_subnet_suffix
+  public_subnets          = var.public_subnets
+  map_public_ip_on_launch = var.map_public_ip_on_launch
+  public_subnet_suffix    = var.public_subnet_suffix
 
-  create_igw                        = var.create_igw
+  private_subnets       = var.private_subnets
+  private_subnet_suffix = var.private_subnet_suffix
 
-  tags = var.tags
+  tags                = var.tags
   private_subnet_tags = var.private_subnet_tags
-  public_subnet_tags = var.public_subnet_tags
-  igw_tags = var.igw_tags
-  vpc_tags = var.vpc_tags
+  public_subnet_tags  = var.public_subnet_tags
+  igw_tags            = var.igw_tags
+  vpc_tags            = var.vpc_tags
 }
 
 
@@ -31,32 +30,45 @@ module "vpc" {
 ################################################################################
 
 module "route_table" {
-  source                          = "../modules/aws-route-table"
+  source = "../modules/aws-route-table"
 
-  vpc_id                          = module.vpc.vpc_id
-  public_subnet_ids               = module.vpc.public_subnet_ids
-  private_subnet_ids              = module.vpc.private_subnet_ids
-  create_multiple_public_route_tables = true
-  single_nat_gateway              = false
-  nat_gateway_ids                 = module.nat_gateway.natgw_ids
-  internet_gateway_id             = module.vpc.igw_id  
-  azs                             = var.azs
-  name                            = "main_vpc"
-  public_subnet_suffix            = "public"
-  private_subnet_suffix           = "private"
-  tags = {
-    Environment = "Development"
-  }
+  vpc_id                = module.vpc.vpc_id
+  public_subnet_ids     = module.vpc.public_subnet_ids
+  public_subnets        = var.private_subnets
+  public_subnet_suffix  = var.public_subnet_suffix
+  private_subnet_ids    = module.vpc.private_subnet_ids
+  private_subnets       = var.private_subnets
+  private_subnet_suffix = var.private_subnet_suffix
+
+  create_multiple_public_route_tables = var.create_multiple_public_route_tables
+  single_nat_gateway                  = var.single_nat_gateway
+  nat_gateway_ids                     = module.nat_gateway.natgw_ids
+  nat_gateway_destination_cidr_block  = var.nat_gateway_destination_cidr_block
+  internet_gateway_id                 = module.vpc.igw_id
+  azs                                 = var.azs
+
+  name                     = var.name
+  tags                     = var.tags
+  public_route_table_tags  = var.public_route_table_tags
+  private_route_table_tags = var.private_route_table_tags
+
 }
 
 ################################################################################
 # NAT Gateway
 ################################################################################
 module "nat_gateway" {
-  source              = "../modules/aws-nat-gateway"
-  public_subnet_ids   = module.vpc.public_subnet_ids
-  azs                 = ["us-east-1a", "us-east-1b"]  
-  single_nat_gateway  = true
+  source = "../modules/aws-nat-gateway"
+
+  reuse_nat_ips        = var.reuse_nat_ips
+  single_nat_gateway   = var.single_nat_gateway
+  aws_internet_gateway = module.vpc.internet_gateway
+  public_subnet_ids    = module.vpc.public_subnet_ids
+  azs                  = var.azs
+
+  tags             = var.private_subnet_tags
+  nat_eip_tags     = var.nat_eip_tags
+  nat_gateway_tags = var.private_subnet_tags
 }
 
 ################################################################################

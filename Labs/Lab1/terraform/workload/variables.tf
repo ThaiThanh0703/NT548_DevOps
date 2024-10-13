@@ -2,13 +2,17 @@
 # General Variables
 ################################################################################
 variable "access_key" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }
 
 variable "secret_key" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
+}
+
+variable "region" {
+
 }
 
 variable "name" {
@@ -133,9 +137,9 @@ variable "private_subnet_tags_per_az" {
 # Internet Gateway
 ################################################################################
 variable "create_igw" {
-    description = "Controls if an Internet Gateway is created for public subnets and the related routes that connect them"
-    type        = bool
-   default     = true
+  description = "Controls if an Internet Gateway is created for public subnets and the related routes that connect them"
+  type        = bool
+  default     = true
 }
 
 variable "igw_tags" {
@@ -147,13 +151,55 @@ variable "igw_tags" {
 ################################################################################
 # NAT Gateway
 ################################################################################
+variable "single_nat_gateway" {
+  description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
+  type        = bool
+  default     = true
+}
 
+variable "reuse_nat_ips" {
+  description = "Should be true if you don't want EIPs to be created for your NAT Gateways and will instead pass them in via the 'external_nat_ip_ids' variable"
+  type        = bool
+  default     = false
+}
 
+variable "nat_gateway_tags" {
+  description = "Additional tags for the NAT gateways"
+  type        = map(string)
+  default     = {}
+}
+
+variable "nat_eip_tags" {
+  description = "Additional tags for the NAT EIP"
+  type        = map(string)
+  default     = {}
+}
 ################################################################################
 # Route Table
 ################################################################################
+variable "create_multiple_public_route_tables" {
+  description = "Indicates whether to create a separate route table for each public subnet. Default: `false`"
+  type        = bool
+  default     = false
+}
 
+variable "nat_gateway_destination_cidr_block" {
+  description = "Used to pass a custom destination route for private NAT Gateway. If not specified, the default 0.0.0.0/0 is used as a destination route"
+  type        = string
+  default     = "0.0.0.0/0"
+}
 
+variable "public_route_table_tags" {
+  description = "Additional tags for the public route tables"
+  type        = map(string)
+  default     = {}
+}
+
+variable "private_route_table_tags" {
+  description = "Additional tags for the private route tables"
+  type        = map(string)
+  default     = {}
+}
 
 ################################################################################
 # EC2
