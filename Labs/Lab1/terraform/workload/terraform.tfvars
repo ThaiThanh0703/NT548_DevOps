@@ -6,13 +6,17 @@ access_key = "enter your access_key"
 
 secret_key = "enter your secret_key"
 
-tags = "lab1"
+tags = {
+  "tag" = "lab1"
+}
 
 name = "nt548"
 
 cidr = "10.0.0.0/16"
 
 azs = ["us-east-1a", "us-east-1b"]
+
+region = "us-east-1"
 
 ################################################################################
 # VPC
@@ -86,10 +90,36 @@ public_route_table_tags = {
 private_route_table_tags = {
   "name" = "group23-prrt"
 }
+
+################################################################################
+# Keypair
+################################################################################
+key_name = "group23"
+
+rsa_bits = 4096
 ################################################################################
 # EC2
 ################################################################################
+create_ec2 = true
 
+instance_type = "t2.micro"
+
+ami= "ami-0fff1b9a61dec8a5f"
+
+associate_public_ip_address = true
 ################################################################################
 # Security Group
 ################################################################################
+create_sg = true
+
+description_pb_sg = "Public Security Group for Public EC2 Instances"
+
+description_pr_sg = "Private Security Group for Privat EC2 Instances"
+
+ingress_rules = [ "ssh-tcp" ]
+
+egress_rules=["all-all"]
+
+specific_ip ="/32"
+
+

@@ -21,7 +21,7 @@ resource "aws_eip" "nat_eip" {
     var.nat_eip_tags,
   )
 
-  depends_on = [var.aws_internet_gateway]
+  
 }
 
 
@@ -48,6 +48,6 @@ resource "aws_nat_gateway" "this" {
     var.nat_gateway_tags,
   )
 
-  depends_on = [var.aws_internet_gateway]
+  
 }
 

@@ -4,9 +4,8 @@
 locals {
   create = var.create 
 
-  this_sg_id = var.create_sg ? concat(aws_security_group.this.*.id, aws_security_group.this_name_prefix.*.id, [""])[0] : var.security_group_id
+  this_sg_id = var.create_sg ? concat(aws_security_group.this.*.id, [""])[0] : var.security_group_id
 }
-
 ################################################################################
 # Security group with name
 ################################################################################
@@ -39,7 +38,6 @@ resource "aws_security_group_rule" "ingress_rules" {
   type              = "ingress"
 
   cidr_blocks      = var.ingress_cidr_blocks
-  prefix_list_ids  = var.ingress_prefix_list_ids
   description      = var.rules[var.ingress_rules[count.index]][3]
 
   from_port = var.rules[var.ingress_rules[count.index]][0]
@@ -57,7 +55,6 @@ resource "aws_security_group_rule" "egress_rules" {
   type              = "egress"
 
   cidr_blocks      = var.egress_cidr_blocks
-  prefix_list_ids  = var.egress_prefix_list_ids
   description      = var.rules[var.egress_rules[count.index]][3]
 
   from_port = var.rules[var.egress_rules[count.index]][0]

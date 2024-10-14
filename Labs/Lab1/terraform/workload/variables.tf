@@ -12,7 +12,8 @@ variable "secret_key" {
 }
 
 variable "region" {
-
+  type    = string
+  default = "us-east-1"
 }
 
 variable "name" {
@@ -202,9 +203,144 @@ variable "private_route_table_tags" {
 }
 
 ################################################################################
+# Keypair
+################################################################################
+variable "key_name" {
+  description = "Name of the keypair"
+  type = string
+  default = ""
+}
+
+variable "rsa_bits" {
+  description = "(Number) When algorithm is RSA, the size of the generated RSA key, in bits (default: 2048)."
+  type = number
+  default = 2048
+}
+
+################################################################################
 # EC2
 ################################################################################
+variable "create_ec2" {
+  description = "Whether to create an instance"
+  type        = bool
+  default     = true
+}
+
+variable "instance_type" {
+  description = "The type of instance to start"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "ami" {
+  description = "ID of AMI to use for the instance"
+  type        = string
+  default     = null
+}
+
+variable "associate_public_ip_address" {
+  description = "Whether to associate a public IP address with an instance in a VPC"
+  type        = bool
+  default     = null
+}
 
 ################################################################################
 # Security Group
 ################################################################################
+variable "rules" {
+  description = "Map of known security group rules (define as 'name' = ['from port', 'to port', 'protocol', 'description'])"
+  type        = map(list(any))
+
+  # Protocols (tcp, udp, icmp, all - are allowed keywords) or numbers (from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml):
+  # All = -1, IPV4-ICMP = 1, TCP = 6, UDP = 17, IPV6-ICMP = 58
+  default = {
+    # SSH
+    ssh-tcp = [22, 22, "tcp", "SSH"]
+
+    # Open all ports & protocols
+    all-all       = [-1, -1, "-1", "All protocols"]
+    # This is a fallback rule to pass to lookup() as default. It does not open anything, because it should never be used.
+    _ = ["", "", ""]
+  }
+}
+
+variable "create_sg" {
+  description = "Whether to create security group"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_id" {
+  description = "ID of existing security group whose rules we will manage"
+  type        = string
+  default     = null
+}
+
+variable "vpc_id" {
+  description = "ID of the VPC where to create security group"
+  type        = string
+  default     = null
+}
+
+
+variable "description_pb_sg" {
+  description = "Description of public security group"
+  type        = string
+  default     = "Security Group managed by Terraform"
+}
+
+variable "description_pr_sg" {
+  description = "Description of private security group"
+  type        = string
+  default     = "Security Group managed by Terraform"
+}
+variable "create_timeout" {
+  description = "Time to wait for a security group to be created"
+  type        = string
+  default     = "10m"
+}
+
+variable "delete_timeout" {
+  description = "Time to wait for a security group to be deleted"
+  type        = string
+  default     = "15m"
+}
+
+variable "ingress_rules" {
+  description = "List of ingress rules to create by name"
+  type        = list(string)
+  default     = []
+}
+
+variable "ingress_cidr_blocks" {
+  description = "List of IPv4 CIDR ranges to use on all ingress rules"
+  type        = list(string)
+  default     = []
+}
+
+
+variable "egress_rules" {
+  description = "List of egress rules to create by name"
+  type        = list(string)
+  default     = []
+}
+
+variable "egress_cidr_blocks" {
+  description = "List of IPv4 CIDR ranges to use on all egress rules"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "egress_prefix_list_ids" {
+  description = "List of prefix list IDs (for allowing access to VPC endpoints) to use on all egress rules"
+  type        = list(string)
+  default     = []
+}
+
+variable "specific_ip" {
+  description = "The IP allow to access to public instances"
+  type        = string
+  default     = "/32"
+}
+
+
