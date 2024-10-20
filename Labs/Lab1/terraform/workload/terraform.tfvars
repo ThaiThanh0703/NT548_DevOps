@@ -7,7 +7,7 @@ access_key = "enter your access_key"
 secret_key = "enter your secret_key"
 
 tags = {
-  "tag" = "lab1"
+  "tag" = "lab1-gr23"
 }
 
 name = "nt548"
@@ -26,7 +26,7 @@ create_vpc = true
 enable_network_address_usage_metrics = true
 
 vpc_tags = {
-  "name" = "group23-vpc",
+  "Name" = "group23-vpc",
 }
 
 
@@ -40,7 +40,7 @@ map_public_ip_on_launch = true
 public_subnet_suffix = "pb_subnet"
 
 public_subnet_tags = {
-  "name" = "group23-pbsn",
+  "Name" = "group23-pbsn",
 }
 
 ################################################################################
@@ -51,7 +51,7 @@ private_subnets = ["10.0.2.0/24", "10.0.3.0/24"]
 private_subnet_suffix = "pr_subnet"
 
 private_subnet_tags = {
-  "name" = "group23-prsn"
+  "Name" = "group23-prsn"
 }
 ################################################################################
 # Internet Gateway
@@ -59,7 +59,7 @@ private_subnet_tags = {
 create_igw = true
 
 igw_tags = {
-  "name" = "group23-igw"
+  "Name" = "group23-igw"
 }
 
 ################################################################################
@@ -70,11 +70,11 @@ single_nat_gateway = true
 reuse_nat_ips = false
 
 nat_eip_tags = {
-  "name" = "group23-natip"
+  "Name" = "group23-natip"
 }
 
 nat_gateway_tags = {
-  "name" = "group23-natgw"
+  "Name" = "group23-natgw"
 }
 ################################################################################
 # Route Table
@@ -84,11 +84,11 @@ create_multiple_public_route_tables = true
 nat_gateway_destination_cidr_block = "0.0.0.0/0"
 
 public_route_table_tags = {
-  "name" = "group23-pbrt"
+  "Name" = "group23-pbrt"
 }
 
 private_route_table_tags = {
-  "name" = "group23-prrt"
+  "Name" = "group23-prrt"
 }
 
 ################################################################################
@@ -116,10 +116,10 @@ description_pb_sg = "Public Security Group for Public EC2 Instances"
 
 description_pr_sg = "Private Security Group for Privat EC2 Instances"
 
-ingress_rules = [ "ssh-tcp" ]
+ingress_rules = ["ssh-tcp"]
 
 egress_rules=["all-all"]
 
-specific_ip ="/32"
+specific_ip ="58.187.185.67/32"
 
 

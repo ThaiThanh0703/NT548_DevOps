@@ -66,9 +66,9 @@ module "nat_gateway" {
   public_subnet_ids    = module.vpc.public_subnet_ids
   azs                  = var.azs
 
-  tags             = var.private_subnet_tags
+  tags             = var.tags
   nat_eip_tags     = var.nat_eip_tags
-  nat_gateway_tags = var.private_subnet_tags
+  nat_gateway_tags = var.nat_gateway_tags
 }
 
 ################################################################################
