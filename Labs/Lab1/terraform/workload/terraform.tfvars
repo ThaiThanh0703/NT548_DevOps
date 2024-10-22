@@ -120,6 +120,6 @@ ingress_rules = ["ssh-tcp"]
 
 egress_rules = ["all-all"]
 
-specific_ip = "58.187.185.67/32"
+specific_ip = "1.53.55.230/32"
 
 
