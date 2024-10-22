@@ -60,11 +60,11 @@ module "route_table" {
 module "nat_gateway" {
   source = "../modules/aws-nat-gateway"
 
-  reuse_nat_ips        = var.reuse_nat_ips
-  single_nat_gateway   = var.single_nat_gateway
+  reuse_nat_ips      = var.reuse_nat_ips
+  single_nat_gateway = var.single_nat_gateway
 
-  public_subnet_ids    = module.vpc.public_subnet_ids
-  azs                  = var.azs
+  public_subnet_ids = module.vpc.public_subnet_ids
+  azs               = var.azs
 
   tags             = var.tags
   nat_eip_tags     = var.nat_eip_tags
@@ -89,18 +89,18 @@ module "ssh_keypair" {
 module "public_ec2_instance" {
   source = "../modules/aws-ec2-instance"
 
-  for_each          = zipmap(var.azs, module.vpc.public_subnet_ids)
-  
- availability_zone = each.key 
-  subnet_id         = each.value 
-  create = var.create_ec2
-  ami= var.ami
-  instance_type = var.instance_type
-  vpc_security_group_ids = [module.public_ec2_security_group.security_group_id]
-  key_name             = module.ssh_keypair.private_key
+  for_each = zipmap(var.azs, module.vpc.public_subnet_ids)
+
+  availability_zone           = each.key
+  subnet_id                   = each.value
+  create                      = var.create_ec2
+  ami                         = var.ami
+  instance_type               = var.instance_type
+  vpc_security_group_ids      = [module.public_ec2_security_group.security_group_id]
+  key_name                    = module.ssh_keypair.key_name
   associate_public_ip_address = var.associate_public_ip_address
-  instance_tags = {"Name"="ec2-${each.key}"}
-  tags        =  var.tags
+  instance_tags               = { "Name" = "ec2-${each.key}" }
+  tags                        = var.tags
 
 }
 
@@ -110,20 +110,20 @@ module "public_ec2_instance" {
 ################################################################################
 
 module "private_ec2_instance" {
-source = "../modules/aws-ec2-instance"
+  source = "../modules/aws-ec2-instance"
 
-  for_each          = zipmap(var.azs, module.vpc.private_subnet_ids)
-  
- availability_zone = each.key 
-  subnet_id         = each.value 
-  create = var.create_ec2
-  ami= var.ami
-  instance_type = var.instance_type
-  vpc_security_group_ids = [module.private_ec2_security_group.security_group_id]
-  key_name             = module.ssh_keypair.private_key
+  for_each = zipmap(var.azs, module.vpc.private_subnet_ids)
+
+  availability_zone           = each.key
+  subnet_id                   = each.value
+  create                      = var.create_ec2
+  ami                         = var.ami
+  instance_type               = var.instance_type
+  vpc_security_group_ids      = [module.private_ec2_security_group.security_group_id]
+  key_name                    = module.ssh_keypair.key_name
   associate_public_ip_address = false
-  instance_tags = {"Name"="ec2-${each.key}"}
-  tags        =  var.tags
+  instance_tags               = { "Name" = "ec2-${each.key}" }
+  tags                        = var.tags
 }
 
 ################################################################################
@@ -131,14 +131,15 @@ source = "../modules/aws-ec2-instance"
 ################################################################################
 
 module "public_ec2_security_group" {
-  source = "../modules/aws-security-group"
-  description = var.description_pb_sg
-  name= var.name
-  vpc_id = module.vpc.vpc_id
-  tags=var.tags
-  ingress_rules = var.ingress_rules
+  source              = "../modules/aws-security-group"
+  description         = var.description_pb_sg
+  name                = var.name
+  prefix              = var.prefix_pb_sg
+  vpc_id              = module.vpc.vpc_id
+  tags                = var.tags
+  ingress_rules       = var.ingress_rules
   ingress_cidr_blocks = [var.specific_ip]
-  egress_rules= var.egress_rules
+  egress_rules        = var.egress_rules
 
 }
 
@@ -150,15 +151,15 @@ module "public_ec2_security_group" {
 module "private_ec2_security_group" {
   source = "../modules/aws-security-group"
 
-  create_sg = false
-  description = var.description_pr_sg
-  name= var.name
-  vpc_id = module.vpc.vpc_id
-  tags=var.tags
-  security_group_id = module.public_ec2_security_group.security_group_id
-  ingress_rules = var.ingress_rules
+  description         = var.description_pr_sg
+  name                = var.name
+  prefix              = var.prefix_pr_sg
+  vpc_id              = module.vpc.vpc_id
+  tags                = var.tags
+  security_group_id   = module.public_ec2_security_group.security_group_id
+  ingress_rules       = var.ingress_rules
   ingress_cidr_blocks = var.public_subnets
-  egress_rules= var.egress_rules
+  egress_rules        = var.egress_rules
 
 }
 

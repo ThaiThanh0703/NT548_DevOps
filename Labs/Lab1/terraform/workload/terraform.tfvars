@@ -104,7 +104,7 @@ create_ec2 = true
 
 instance_type = "t2.micro"
 
-ami= "ami-0fff1b9a61dec8a5f"
+ami = "ami-0fff1b9a61dec8a5f"
 
 associate_public_ip_address = true
 ################################################################################
@@ -118,8 +118,8 @@ description_pr_sg = "Private Security Group for Privat EC2 Instances"
 
 ingress_rules = ["ssh-tcp"]
 
-egress_rules=["all-all"]
+egress_rules = ["all-all"]
 
-specific_ip ="58.187.185.67/32"
+specific_ip = "58.187.185.67/32"
 
 

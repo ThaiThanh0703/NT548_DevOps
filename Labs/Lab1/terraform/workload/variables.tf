@@ -207,14 +207,14 @@ variable "private_route_table_tags" {
 ################################################################################
 variable "key_name" {
   description = "Name of the keypair"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "rsa_bits" {
   description = "(Number) When algorithm is RSA, the size of the generated RSA key, in bits (default: 2048)."
-  type = number
-  default = 2048
+  type        = number
+  default     = 2048
 }
 
 ################################################################################
@@ -258,10 +258,22 @@ variable "rules" {
     ssh-tcp = [22, 22, "tcp", "SSH"]
 
     # Open all ports & protocols
-    all-all       = [-1, -1, "-1", "All protocols"]
+    all-all = [-1, -1, "-1", "All protocols"]
     # This is a fallback rule to pass to lookup() as default. It does not open anything, because it should never be used.
     _ = ["", "", ""]
   }
+}
+
+variable "prefix_pb_sg" {
+  description = "Prefix name of public security group - not required if create_sg is false"
+  type        = string
+  default     = "public"
+}
+
+variable "prefix_pr_sg" {
+  description = "Prefix name of public security group - not required if create_sg is false"
+  type        = string
+  default     = "private"
 }
 
 variable "create_sg" {
@@ -282,7 +294,6 @@ variable "vpc_id" {
   default     = null
 }
 
-
 variable "description_pb_sg" {
   description = "Description of public security group"
   type        = string
@@ -293,17 +304,6 @@ variable "description_pr_sg" {
   description = "Description of private security group"
   type        = string
   default     = "Security Group managed by Terraform"
-}
-variable "create_timeout" {
-  description = "Time to wait for a security group to be created"
-  type        = string
-  default     = "10m"
-}
-
-variable "delete_timeout" {
-  description = "Time to wait for a security group to be deleted"
-  type        = string
-  default     = "15m"
 }
 
 variable "ingress_rules" {
@@ -329,12 +329,6 @@ variable "egress_cidr_blocks" {
   description = "List of IPv4 CIDR ranges to use on all egress rules"
   type        = list(string)
   default     = ["0.0.0.0/0"]
-}
-
-variable "egress_prefix_list_ids" {
-  description = "List of prefix list IDs (for allowing access to VPC endpoints) to use on all egress rules"
-  type        = list(string)
-  default     = []
 }
 
 variable "specific_ip" {
