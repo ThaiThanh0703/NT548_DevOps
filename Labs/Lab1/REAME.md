@@ -27,3 +27,10 @@ Create Security Groups to control in/out traffic of EC2 instances
 + Ensure security for EC2 instances (configure Security Groups).
 + Test cases are required to verify that each service is deployed successfully.
 
+## How to run source code:
+Step 1: Enter the access key and secret key in provider.tf inside the workload folder.
+Step 2: Run the terraform init command in the modules you want to deploy within the modules folder.
+Step 3: Run the terraform plan command to create a plan for the changes to your infrastructure.
+Step 4: Use the terraform apply command to implement the changes to your infrastructure.
+Step 5: Use the terraform test command in the tests folder to check your infrastructure.
+Step 6: Use the terraform destroy command to delete all infrastructure after use to save resources.
