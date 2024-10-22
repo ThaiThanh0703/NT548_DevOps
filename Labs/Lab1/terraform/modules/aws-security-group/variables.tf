@@ -58,6 +58,11 @@ variable "name" {
   default     = null
 }
 
+variable "prefix" {
+  description = "Prefix name of security group - not required if create_sg is false"
+  type        = string
+  default     = null
+}
 variable "use_name_prefix" {
   description = "Whether to use name_prefix or fixed name. Should be true to able to update security group name after initial creation"
   type        = bool

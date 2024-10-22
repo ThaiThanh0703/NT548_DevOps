@@ -4,20 +4,19 @@
 locals {
   create = var.create 
 
-  this_sg_id = var.create_sg ? concat(aws_security_group.this.*.id, [""])[0] : var.security_group_id
+  this_sg_id = var.create_sg ? aws_security_group.this.id : var.security_group_id
 }
 ################################################################################
 # Security group with name
 ################################################################################
 resource "aws_security_group" "this" {
-  count = local.create && var.create_sg && !var.use_name_prefix ? 1 : 0
 
-  name                   = var.name
+  name                   = "${var.prefix}_${var.name}_sg"
   description            = var.description
   vpc_id                 = var.vpc_id
   tags = merge(
     {
-      "Name" = format("%s", var.name)
+      "Name" = format("%s - %s ",var.prefix, var.name)
     },
     var.tags,
   )
