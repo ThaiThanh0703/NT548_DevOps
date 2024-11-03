@@ -46,7 +46,7 @@ variable "nat_gateway_destination_cidr_block" {
 variable "single_nat_gateway" {
   description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "one_nat_gateway_per_az" {

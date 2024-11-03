@@ -42,8 +42,6 @@ variable "public_subnet_suffix" {
   default     = "public"
 }
 
-
-
 variable "create_multiple_public_route_tables" {
   description = "Indicates whether to create a separate route table for each public subnet. Default: `false`"
   type        = bool
@@ -55,6 +53,13 @@ variable "public_route_table_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "internet_gateway_id" {
+  description = "ID of the Internet Gateway to associate with the public route table"
+  type        = string
+  default     = ""
+}
+
 
 ################################################################################
 # Private Route Table

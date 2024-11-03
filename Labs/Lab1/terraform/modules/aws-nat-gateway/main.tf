@@ -6,6 +6,8 @@ locals {
   nat_gateway_ips   = var.reuse_nat_ips ? var.external_nat_ip_ids : aws_eip.nat_eip[*].id
 }
 resource "aws_eip" "nat_eip" {
+  count = var.single_nat_gateway ? 1 : length(var.azs)
+
   domain = "vpc"
 
   tags = merge(
@@ -19,11 +21,12 @@ resource "aws_eip" "nat_eip" {
     var.nat_eip_tags,
   )
 
-  depends_on = [var.aws_internet_gateway]
+  
 }
 
-resource "aws_nat_gateway" "this" {
 
+resource "aws_nat_gateway" "this" {
+  count = var.single_nat_gateway ? 1 : length(var.azs)
 
   allocation_id = element(
     local.nat_gateway_ips,
@@ -45,6 +48,6 @@ resource "aws_nat_gateway" "this" {
     var.nat_gateway_tags,
   )
 
-  depends_on = [var.aws_internet_gateway]
+  
 }
 
