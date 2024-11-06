@@ -1,0 +1,46 @@
+Parameters:
+  VPCID:
+    Type: String
+    Description: The ID of the VPC for security group deployment
+  UserIP:
+    Type: String
+    Description: The IP address from which SSH access is permitted
+
+Resources:
+  # Public Security Group
+  PublicSSHAccessGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allows SSH access from a specific IP"
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Sub "${UserIP}/32"
+      Tags:
+        - Key: Name
+          Value: PublicSSHAccessGroup
+
+  # Private Security Group
+  PrivateInstanceAccessGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allows SSH access from instances in the public security group"
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref PublicSSHAccessGroup
+      Tags:
+        - Key: Name
+          Value: PrivateInstanceAccessGroup
+
+Outputs:
+  PublicSecurityGroupID: 
+    Description: "ID of the public SSH access security group"
+    Value: !Ref PublicSSHAccessGroup
+  PrivateSecurityGroupID: 
+    Description: "ID of the private instance access security group"
+    Value: !Ref PrivateInstanceAccessGroup

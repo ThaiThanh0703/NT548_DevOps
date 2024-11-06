@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Bài thực hành NT548
+
+Resources:
+  # VPC Stack
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-vpc-with-subnets.yaml
+  # NAT Gateway Stack
+  NATGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-nat-gateway.yaml
+      Parameters:
+        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+
+  # Route Tables Stack
+  RouteTablesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-route-table.yaml
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        IGW: !GetAtt VPCStack.Outputs.IGW
+        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
+        NatGateway: !GetAtt NATGatewayStack.Outputs.NatGateway
+
+  # Security Group Stack
+  SecurityGroupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-security-group.yaml
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        LocalIP: 192.168.1.3/32
+
+  # EC2 Stack
+  EC2Stack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-ec2-instance.yaml
+      Parameters:
+        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
+        PublicSG: !GetAtt SecurityGroupStack.Outputs.PublicSG
+        PrivateSG: !GetAtt SecurityGroupStack.Outputs.PrivateSG
+        Ami: ami-0fff1b9a61dec8a5f
+        InstanceType: t2.micro

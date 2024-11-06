@@ -1,0 +1,80 @@
+Parameters:
+  VPCCidrBlock: 
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetCidrBlock:
+    Type: String
+    Default: 10.0.1.0/24
+  PrivateSubnetCidrBlock:
+    Type: String
+    Default: 10.0.2.0/24
+
+Resources:
+  # VPC 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref VPCCidrBlock
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  # Public Subnet
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnetCidrBlock
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: MyPublicSubnet
+        
+  # Private Subnet
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnetCidrBlock
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: MyPrivateSubnet
+
+  # Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags:
+        - Key: Name
+          Value: MyInternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Security Group 
+  DefaultSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Default Security Group for MyVPC"
+      VpcId: !Ref VPC
+
+Outputs:
+  VPCID:
+    Value: !Ref VPC
+    Description: "ID of the created VPC"
+  PublicSubnetID:
+    Value: !Ref PublicSubnet
+    Description: "ID of the public subnet"
+  PrivateSubnetID:
+    Value: !Ref PrivateSubnet
+    Description: "ID of the private subnet"
+  InternetGatewayID:
+    Value: !Ref InternetGateway
+    Description: "ID of the Internet Gateway"

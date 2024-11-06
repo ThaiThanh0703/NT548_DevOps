@@ -1,0 +1,51 @@
+Parameters:
+  PublicSG:
+    Type: String
+  PrivateSG:
+    Type: String
+  PublicSubnet:
+    Type: String
+  PrivateSubnet:
+    Type: String
+  Ami:
+    Type: AWS::EC2::Image::Id
+  InstanceType:
+    Type: String
+
+Resources:
+
+# EC2 Instance in Public Subnet
+  PublicInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PublicSG
+      SubnetId: !Ref PublicSubnet
+      ImageId: !Ref Ami 
+      KeyName: EC2KeyPair 
+      Tags:
+        - Key: Name
+          Value: PublicInstance
+  # EC2 Instance in Private Subnet
+  PrivateInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PrivateSG
+      SubnetId: !Ref PrivateSubnet
+      ImageId: !Ref Ami
+      KeyName: EC2KeyPair
+      Tags:
+        - Key: Name
+          Value: PrivateInstance
+
+Outputs:
+  PublicInstanceID:
+    Description: "ID of the EC2 instance in the public subnet"
+    Value: !Ref PublicInstance
+
+  PrivateInstanceID:
+    Description: "ID of the EC2 instance in the private subnet"
+    Value: !Ref PrivateInstance

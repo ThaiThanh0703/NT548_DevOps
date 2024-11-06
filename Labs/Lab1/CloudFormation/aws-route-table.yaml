@@ -1,0 +1,68 @@
+Parameters:
+  VPC:
+    Type: String
+  PublicSubnet:
+    Type: String
+  PrivateSubnet:
+    Type: String
+  InternetGateway:
+    Type: String
+  NatGatewayID:
+    Type: String
+
+Resources:
+  # Public Route Table
+  RouteTableForPublic:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: RouteTableForPublic
+
+  # Private Route Table
+  RouteTableForPrivate:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: RouteTableForPrivate
+
+  # Public Route for Internet Access
+  RouteToInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTableForPublic
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Private Route for NAT Gateway Access
+  RouteToNAT:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTableForPrivate
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGatewayID
+
+  # Associate Public Subnet with Public Route Table
+  AssociatePublicSubnetWithRouteTable:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref RouteTableForPublic
+
+  # Associate Private Subnet with Private Route Table
+  AssociatePrivateSubnetWithRouteTable:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      RouteTableId: !Ref RouteTableForPrivate
+
+Outputs:
+  PublicRouteTableID:
+    Description: "ID of the public route table"
+    Value: !Ref RouteTableForPublic
+  PrivateRouteTableID:
+    Description: "ID of the private route table"
+    Value: !Ref RouteTableForPrivate
