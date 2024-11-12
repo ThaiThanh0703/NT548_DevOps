@@ -1,50 +1,57 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Bài thực hành NT548
+Description: NT548 Cloudformation
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+    Default: group23-s3
+
 
 Resources:
   # VPC Stack
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-vpc-with-subnets.yaml
+      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-vpc-with-subnets.yml
+
   # NAT Gateway Stack
   NATGatewayStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-nat-gateway.yaml
+      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-nat-gateway.yml
       Parameters:
-        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
 
   # Route Tables Stack
   RouteTablesStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-route-table.yaml
+      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-route-table.yml
       Parameters:
-        VPC: !GetAtt VPCStack.Outputs.VPC
-        IGW: !GetAtt VPCStack.Outputs.IGW
-        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
-        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
-        NatGateway: !GetAtt NATGatewayStack.Outputs.NatGateway
+        VPCId: !GetAtt VPCStack.Outputs.VPC
+        InternetGatewayId: !GetAtt VPCStack.Outputs.InternetGatewayId
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
+        PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
+        NatGatewayId: !GetAtt NATGatewayStack.Outputs.NatGatewayId
 
   # Security Group Stack
   SecurityGroupStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-security-group.yaml
+      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-security-group.yml
       Parameters:
-        VPC: !GetAtt VPCStack.Outputs.VPC
-        LocalIP: 192.168.1.3/32
+        VPCId: !GetAtt VPCStack.Outputs.VPCId
+        UserIP: 1.1.1.1
 
   # EC2 Stack
   EC2Stack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cloudformationaws.com/aws-ec2-instance.yaml
+      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-ec2-instances.yml
       Parameters:
-        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
-        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
-        PublicSG: !GetAtt SecurityGroupStack.Outputs.PublicSG
-        PrivateSG: !GetAtt SecurityGroupStack.Outputs.PrivateSG
-        Ami: ami-0fff1b9a61dec8a5f
-        InstanceType: t2.micro
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
+        PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
+        PublicSGId: !GetAtt SecurityGroupStack.Outputs.PublicSecurityGroupId
+        PrivateSGId: !GetAtt SecurityGroupStack.Outputs.PrivateSecurityGroupId
+        AmiId: ami-0fff1b9a61dec8a5f

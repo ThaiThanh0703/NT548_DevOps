@@ -1,45 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create EC2 instances
+
 Parameters:
-  PublicSG:
+  Name:
     Type: String
-  PrivateSG:
+    Description: Name prefix for all resources
+    Default: NT548-group23
+
+  PublicSGId:
     Type: String
-  PublicSubnet:
+    Description: Public Security Group ID
+
+  PrivateSGId:
     Type: String
-  PrivateSubnet:
+    Description: Private Security Group ID
+
+  PublicSubnetId:
     Type: String
-  Ami:
-    Type: AWS::EC2::Image::Id
+    Description: Public Subnet ID
+
+  PrivateSubnetId:
+    Type: String
+    Description: Private Subnet ID
+
+  AmiId:
+    Type: String
+    Description: The ID of the  Amazon Machine Image (AMI) to use for the EC2 instances
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
   InstanceType:
     Type: String
+    Description:  EC2 instance type
+    Default: t2.micro
+
+  KeyPairName:
+    Description: The name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: String
+    Default : group23
 
 Resources:
-
-# EC2 Instance in Public Subnet
+  # EC2 Instance in Public Subnet
   PublicInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
-      SecurityGroupIds:
-        - !Ref PublicSG
-      SubnetId: !Ref PublicSubnet
-      ImageId: !Ref Ami 
-      KeyName: EC2KeyPair 
+      NetworkInterfaces: AssociatePublicIpAddress: "true"
+      SecurityGroupIds: !Ref PublicSGId
+      SubnetId: !Ref PublicSubnetId
+      ImageId: !Ref AmiId 
+      KeyName: !Ref KeyPairName 
       Tags:
         - Key: Name
-          Value: PublicInstance
+          Value: !Sub "${Name}-PublicInstance"
+  
   # EC2 Instance in Private Subnet
   PrivateInstance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: !Ref InstanceType
-      SecurityGroupIds:
-        - !Ref PrivateSG
-      SubnetId: !Ref PrivateSubnet
+      InstanceType: !Ref InstanceTypeId
+      NetworkInterfaces: AssociatePublicIpAddress: "false"
+      SecurityGroupIds: !Ref PrivateSGId
+      SubnetId: !Ref PrivateSubnetId
       ImageId: !Ref Ami
-      KeyName: EC2KeyPair
+      KeyName: !Ref KeyPairName 
       Tags:
         - Key: Name
-          Value: PrivateInstance
+          Value: !Sub "${Name}-PublicInstance"
 
 Outputs:
   PublicInstanceID:
@@ -49,3 +75,11 @@ Outputs:
   PrivateInstanceID:
     Description: "ID of the EC2 instance in the private subnet"
     Value: !Ref PrivateInstance
+
+  PublicInstanceIP:
+    Description: Public IP address of the Public Instance
+    Value: !GetAtt PublicInstance.PublicIp
+
+  PrivateInstanceIP:
+    Description: Private IP address of the Private Instance
+    Value: !GetAtt PrivateInstance.PrivateIp

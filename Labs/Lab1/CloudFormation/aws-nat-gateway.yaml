@@ -30,6 +30,6 @@ Resources:
         Value: !Sub "${Name}-NatGW"
 
 Outputs:
-  NATGatewayID:
+  NatGatewayID:
     Description: "The ID of the NAT Gateway created"
     Value: !Ref NATGatewayResource

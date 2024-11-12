@@ -1,7 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create Security Groups
+
 Parameters:
-  VPCID:
+  Name:
+    Type: String
+    Description: Name prefix for all resources
+    Default: NT548-group23
+
+  VPCId:
     Type: String
     Description: The ID of the VPC for security group deployment
+
   UserIP:
     Type: String
     Description: The IP address from which SSH access is permitted
@@ -20,7 +29,7 @@ Resources:
           CidrIp: !Sub "${UserIP}/32"
       Tags:
         - Key: Name
-          Value: PublicSSHAccessGroup
+          Value: !Sub "${Name}-PublicSSHAccessGroup"
 
   # Private Security Group
   PrivateInstanceAccessGroup:
@@ -35,12 +44,13 @@ Resources:
           SourceSecurityGroupId: !Ref PublicSSHAccessGroup
       Tags:
         - Key: Name
-          Value: PrivateInstanceAccessGroup
+          Value: !Sub "${Name}-PrivateInstanceAccessGroup"
 
 Outputs:
-  PublicSecurityGroupID: 
+  PublicSecurityGroupId: 
     Description: "ID of the public SSH access security group"
     Value: !Ref PublicSSHAccessGroup
-  PrivateSecurityGroupID: 
+    
+  PrivateSecurityGroupId: 
     Description: "ID of the private instance access security group"
     Value: !Ref PrivateInstanceAccessGroup
