@@ -1,12 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create a VPC with public and private subnets, an Internet Gateway, and a default Security Group.
+
 Parameters:
+  Name:
+    Type: String
+    Description: Name prefix for all resources
+    Default: NT548-group23
+
   VPCCidrBlock: 
     Type: String
+    Description: CIDR block for the VPC
     Default: 10.0.0.0/16
+
   PublicSubnetCidrBlock:
     Type: String
+    Description: CIDR block for the public subnet 
     Default: 10.0.1.0/24
+    
   PrivateSubnetCidrBlock:
     Type: String
+    Description: CIDR block for the private subnet 
     Default: 10.0.2.0/24
 
 Resources:
@@ -19,7 +32,7 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: MyVPC
+          Value: !Sub "${Name}-vpc"
 
   # Public Subnet
   PublicSubnet:
@@ -31,7 +44,7 @@ Resources:
       AvailabilityZone: !Select [0, !GetAZs '']
       Tags:
         - Key: Name
-          Value: MyPublicSubnet
+          Value: !Sub "${Name}-pb-subnet"
         
   # Private Subnet
   PrivateSubnet:
@@ -42,7 +55,7 @@ Resources:
       AvailabilityZone: !Select [0, !GetAZs '']
       Tags:
         - Key: Name
-          Value: MyPrivateSubnet
+          Value: !Sub "${Name}-pr-subnet"
 
   # Internet Gateway
   InternetGateway:
@@ -50,7 +63,7 @@ Resources:
     Properties: 
       Tags:
         - Key: Name
-          Value: MyInternetGateway
+          Value: "${Name}-igw"
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -64,17 +77,29 @@ Resources:
     Properties:
       GroupDescription: "Default Security Group for MyVPC"
       VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          CidrIp: '0.0.0.0/0'
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: Name
+          Value: !Sub "${Name}-default-sg"
 
 Outputs:
   VPCID:
     Value: !Ref VPC
     Description: "ID of the created VPC"
+
   PublicSubnetID:
     Value: !Ref PublicSubnet
     Description: "ID of the public subnet"
+
   PrivateSubnetID:
     Value: !Ref PrivateSubnet
     Description: "ID of the private subnet"
+
   InternetGatewayID:
     Value: !Ref InternetGateway
     Description: "ID of the Internet Gateway"
