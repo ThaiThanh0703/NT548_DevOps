@@ -1,11 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create a NAT Gateway
+
 Parameters:
-  PublicSubnet:
+  Name:
     Type: String
+    Description: Name prefix for all resources
+
+  PublicSubnetId:
+    Type: String
+    Description: ID of the Public Subnet
 
 Resources:
   # Elastic IP Allocation for NAT Gateway
   ElasticIPForNAT:
     Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub "${Name}-NatIP"
 
   # NAT Gateway Resource
   NATGatewayResource:
@@ -13,6 +25,9 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet
       AllocationId: !GetAtt ElasticIPForNAT.AllocationId
+      Tags:
+      - Key: Name
+        Value: !Sub "${Name}-NatGW"
 
 Outputs:
   NATGatewayID:
