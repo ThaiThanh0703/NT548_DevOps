@@ -1,33 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create Route Tables
+
 Parameters:
-  VPC:
+  Name:
     Type: String
-  PublicSubnet:
+    Description: Name prefix for all resources
+    Default: NT548-group23
+
+  VPCId:
     Type: String
-  PrivateSubnet:
+    Description: The ID of the VPC
+
+  PublicSubnetId:
     Type: String
-  InternetGateway:
+    Description: The ID of the Public Subnet
+
+  PrivateSubnetId:
     Type: String
+    Description: The ID of the Private Subnet
+
+  InternetGatewayId:
+     Type: String
+    Description: ID of the Internet Gateway to associate with the Public Route Table
+
   NatGatewayID:
-    Type: String
+     Type: String
+    Description: Nat Gateway ID
+
 
 Resources:
   # Public Route Table
   RouteTableForPublic:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref VPCId
       Tags:
         - Key: Name
-          Value: RouteTableForPublic
+          Value: !Sub "${Name}-PbRtTable"
 
   # Private Route Table
   RouteTableForPrivate:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref VPCId
       Tags:
         - Key: Name
-          Value: RouteTableForPrivate
+          Value: !Sub "${Name}-PrRtTable"
 
   # Public Route for Internet Access
   RouteToInternet:
@@ -35,7 +53,7 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTableForPublic
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
+      GatewayId: !Ref InternetGatewayId
 
   # Private Route for NAT Gateway Access
   RouteToNAT:
@@ -49,20 +67,21 @@ Resources:
   AssociatePublicSubnetWithRouteTable:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet
+      SubnetId: !Ref PublicSubnetId
       RouteTableId: !Ref RouteTableForPublic
 
   # Associate Private Subnet with Private Route Table
   AssociatePrivateSubnetWithRouteTable:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnet
+      SubnetId: !Ref PrivateSubnetId
       RouteTableId: !Ref RouteTableForPrivate
 
 Outputs:
   PublicRouteTableID:
     Description: "ID of the public route table"
     Value: !Ref RouteTableForPublic
+
   PrivateRouteTableID:
     Description: "ID of the private route table"
     Value: !Ref RouteTableForPrivate
