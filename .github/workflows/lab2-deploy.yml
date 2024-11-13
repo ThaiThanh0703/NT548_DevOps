@@ -1,0 +1,46 @@
+name: "Terraform deploy with seccurity check by Checkov"
+
+on : 
+  push:
+    branches:
+      - Lab
+  
+  pull_request:
+    braches:
+      - master
+
+defaults:
+  run:
+    working-directory: ./Lab/Lab1/terraform
+
+jobs:
+  terraform-checkov:
+    runs-on: ubuntu-latest
+    name: Validate code and security scan with Checkov
+
+    steps:
+
+    # 1. Checkout code from repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+    # 2. Configure AWS credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ vars.AWS_REGION }} 
+    
+    # 3. Run Checkov to scan Terraform codes
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ./workload
+          framework: terraform
+          soft_fail: true
+
+
+      
+
+    
