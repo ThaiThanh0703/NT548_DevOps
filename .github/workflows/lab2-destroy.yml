@@ -1,0 +1,9 @@
+name: 'Terraform Destroy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type "DESTROY" to confirm destruction of infrastructure'
+        required: true
+        type: string
