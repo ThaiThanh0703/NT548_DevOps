@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh sửa lại đường dẫn
+    working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo đường dẫn đúng
 
 jobs:
   terraform-checkov:
@@ -18,11 +18,9 @@ jobs:
     name: Validate code and security scan with Checkov
 
     steps:
-      # 1. Checkout code from repository
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # 2. Configure AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -30,11 +28,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }} 
       
-      # 3. Run Checkov to scan Terraform code
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
+          directory: ./Labs/Lab1/terraform/workload
           framework: terraform
           soft_fail: true
 
@@ -62,29 +59,31 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      - name: List files in terraform directory  # Kiểm tra thư mục
-        run: ls -al ./Labs/Lab1/terraform/workload
+      - name: Verify working directory
+        run: |
+          echo "Current working directory: $(pwd)"
+          ls -al ./Labs/Lab1/terraform/workload
 
       - name: Run Checkov on Terraform code
-        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: terraform init
 
       - name: Validate Terraform Configuration
-        working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: terraform validate -no-color
 
       - name: Plan Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: terraform apply --auto-approve
 
       - name: Clean Up
-        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload
         run: rm -f tfplan
