@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./Lab/Lab1/terraform/workload
+    working-directory: Lab/Lab1/terraform/workload
 
 jobs:
   terraform-checkov:
@@ -34,7 +34,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ./Lab/Lab1/terraform/workload
+          directory: Lab/Lab1/terraform/workload
           framework: terraform
           soft_fail: true
 
@@ -68,25 +68,25 @@ jobs:
         run: pip install checkov
 
       - name: Run Checkov on Terraform code
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: terraform init
 
       - name: Validate Terraform Configuration
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: terraform validate -no-color
 
       - name: Plan Terraform Changes
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform Changes
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: terraform apply --auto-approve
 
       - name: Clean Up
-        working-directory: ./Lab/Lab1/terraform/workload
+        working-directory: Lab/Lab1/terraform/workload
         run: rm -f tfplan
