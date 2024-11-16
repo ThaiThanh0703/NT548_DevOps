@@ -34,7 +34,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ./Labs/Lab1/terraform/workloads  # Cập nhật lại đường dẫn
+          directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
           framework: terraform
           soft_fail: true
 
