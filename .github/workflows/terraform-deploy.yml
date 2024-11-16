@@ -31,7 +31,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ./Labs/Lab1/terraform/workload
+          directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
           framework: terraform
           soft_fail: true
 
@@ -59,9 +59,11 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      - name: Verify working directory
+      - name: List the full directory structure
         run: |
           echo "Current working directory: $(pwd)"
+          ls -al /home/runner/work/NT548_DevOps/NT548_DevOps/
+          ls -al ./Labs/Lab1/terraform/
           ls -al ./Labs/Lab1/terraform/workload
 
       - name: Run Checkov on Terraform code
