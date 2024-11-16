@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo chỉ đường dẫn chính xác
+    working-directory: ./Lab/Lab1/terraform/workload
 
 jobs:
   terraform-checkov:
@@ -21,26 +21,20 @@ jobs:
       # 1. Checkout code from repository
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # 2. List files in the directory to verify path
-      - name: List files in the 'workload' directory
-        run: |
-          echo "Current working directory: $(pwd)"
-          ls -al ./Labs/Lab1/terraform/workload  # Kiểm tra thư mục trong repository
-
-      # 3. Configure AWS credentials
+      
+      # 2. Configure AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }} 
-
-      # 4. Run Checkov to scan Terraform code
+    
+      # 3. Run Checkov to scan Terraform code
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
+          directory: ./Lab/Lab1/terraform/workload
           framework: terraform
           soft_fail: true
 
@@ -65,36 +59,34 @@ jobs:
           aws-secret-access-key: ${{ env.SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
       - name: Install Checkov
         run: pip install checkov
 
-      # 5. List files again to verify correct path
-      - name: List files in terraform directory
-        run: |
-          echo "Current working directory: $(pwd)"
-          ls -al ./Labs/Lab1/terraform/workload  # Kiểm tra lại thư mục
-
-      # 6. Run Checkov on Terraform code
       - name: Run Checkov on Terraform code
-        working-directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
+        working-directory: ./Lab/Lab1/terraform/workload
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo đường dẫn chính xác
+        working-directory: ./Lab/Lab1/terraform/workload
         run: terraform init
 
       - name: Validate Terraform Configuration
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Lab/Lab1/terraform/workload
         run: terraform validate -no-color
 
       - name: Plan Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Lab/Lab1/terraform/workload
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Lab/Lab1/terraform/workload
         run: terraform apply --auto-approve
 
       - name: Clean Up
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Lab/Lab1/terraform/workload
         run: rm -f tfplan
