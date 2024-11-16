@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo đường dẫn đúng
+    working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo chỉ đường dẫn chính xác
 
 jobs:
   terraform-checkov:
@@ -18,16 +18,25 @@ jobs:
     name: Validate code and security scan with Checkov
 
     steps:
+      # 1. Checkout code from repository
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      # 2. List files in the directory to verify path
+      - name: List files in the 'workload' directory
+        run: |
+          echo "Current working directory: $(pwd)"
+          ls -al ./Labs/Lab1/terraform/workload  # Kiểm tra thư mục trong repository
+
+      # 3. Configure AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }} 
-      
+
+      # 4. Run Checkov to scan Terraform code
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
@@ -59,19 +68,19 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      - name: List the full directory structure
+      # 5. List files again to verify correct path
+      - name: List files in terraform directory
         run: |
           echo "Current working directory: $(pwd)"
-          ls -al /home/runner/work/NT548_DevOps/NT548_DevOps/
-          ls -al ./Labs/Lab1/terraform/
-          ls -al ./Labs/Lab1/terraform/workload
+          ls -al ./Labs/Lab1/terraform/workload  # Kiểm tra lại thư mục
 
+      # 6. Run Checkov on Terraform code
       - name: Run Checkov on Terraform code
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Labs/Lab1/terraform/workload  # Cập nhật lại đường dẫn
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: ./Labs/Lab1/terraform/workload  # Đảm bảo đường dẫn chính xác
         run: terraform init
 
       - name: Validate Terraform Configuration
