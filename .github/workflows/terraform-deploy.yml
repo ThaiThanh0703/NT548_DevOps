@@ -1,6 +1,6 @@
 name: "Terraform Deploy with Security Check by Checkov"
 
-on: 
+on:
   push:
     branches:
       - Lab
@@ -71,29 +71,29 @@ jobs:
       - name: List files in terraform directory
         run: |
           echo "Current working directory: $(pwd)"
-          ls -al ./Labs/Lab1/terraform/workload  # Kiểm tra thư mục
+          ls -al /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Kiểm tra thư mục với đường dẫn tuyệt đối
 
       # Chạy Checkov
       - name: Run Checkov on Terraform code
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: terraform init
 
       - name: Validate Terraform Configuration
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: terraform validate -no-color
 
       - name: Plan Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: terraform apply --auto-approve
 
       - name: Clean Up
-        working-directory: ./Labs/Lab1/terraform/workload
+        working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: rm -f tfplan
