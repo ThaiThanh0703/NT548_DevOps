@@ -94,6 +94,7 @@ jobs:
         working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: terraform apply --auto-approve
 
+        
       - name: Clean Up
         working-directory: /home/runner/work/NT548_DevOps/NT548_DevOps/Labs/Lab1/terraform/workload  # Đảm bảo sử dụng đường dẫn tuyệt đối
         run: rm -f tfplan
