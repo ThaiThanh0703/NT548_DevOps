@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh sửa lại đường dẫn
+    working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh sửa lại đường dẫn
 
 jobs:
   terraform-checkov:
@@ -63,28 +63,28 @@ jobs:
         run: pip install checkov
 
       - name: List files in terraform directory  # Kiểm tra thư mục
-        run: ls -al ./Labs/Lab1/terraform/workloads
+        run: ls -al ./Labs/Lab1/terraform/workload
 
       - name: Run Checkov on Terraform code
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
         run: checkov -d . || true
 
       - name: Initialize Terraform
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
         run: terraform init
 
       - name: Validate Terraform Configuration
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh lại
         run: terraform validate -no-color
 
       - name: Plan Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload  # Chỉnh lại
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform Changes
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
         run: terraform apply --auto-approve
 
       - name: Clean Up
-        working-directory: ./Labs/Lab1/terraform/workloads  # Chỉnh lại
+        working-directory: ./Labs/Lab1/terraform/workload # Chỉnh lại
         run: rm -f tfplan
