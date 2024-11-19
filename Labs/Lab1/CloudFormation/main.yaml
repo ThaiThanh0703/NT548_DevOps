@@ -1,12 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: NT548 Cloudformation
+Description: NT548 CloudFormation
 
 Parameters:
   BucketName:
     Type: String
     Description: The name of the S3 bucket
     Default: group23-s3
-
 
 Resources:
   # VPC Stack
@@ -35,23 +34,3 @@ Resources:
         PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
         NatGatewayId: !GetAtt NATGatewayStack.Outputs.NatGatewayId
 
-  # Security Group Stack
-  SecurityGroupStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-security-group.yml
-      Parameters:
-        VPCId: !GetAtt VPCStack.Outputs.VPCId
-        UserIP: 1.1.1.1
-
-  # EC2 Stack
-  EC2Stack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub https://${BucketName}.s3.us-east-1.amazonaws.com/aws-ec2-instances.yml
-      Parameters:
-        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
-        PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
-        PublicSGId: !GetAtt SecurityGroupStack.Outputs.PublicSecurityGroupId
-        PrivateSGId: !GetAtt SecurityGroupStack.Outputs.PrivateSecurityGroupId
-        AmiId: ami-0fff1b9a61dec8a5f
