@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - echo "Installing required tools: cfn-lint and taskcat"
+      - pip install cfn-lint taskcat
+  pre_build:
+    commands:
+      - echo "Uploading project files to existing S3 bucket group23-s3"
+      - aws s3 cp . s3://group23-s3/ --recursive
+  build:
+    commands:
+      - echo "Validating the CloudFormation template: main.yaml"
+      - cfn-lint main.yaml
+      - echo "Executing Taskcat to test the templates"
+      - taskcat test run
+      - echo "Deploying the main CloudFormation stack"
+      - aws cloudformation deploy --template-file main.yaml --stack-name group23-main-stack --capabilities CAPABILITY_NAMED_IAM
+artifacts:
+  files:
+    - '**/*'
+  base-directory: '.'
+  discard-paths: yes

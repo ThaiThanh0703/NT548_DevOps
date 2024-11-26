@@ -63,7 +63,7 @@ Resources:
     Properties: 
       Tags:
         - Key: Name
-          Value: "${Name}-igw"
+          Value: !Sub "${Name}-igw" 
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -100,4 +100,3 @@ Outputs:
   InternetGatewayId:
     Value: !Ref InternetGateway
     Description: "Internet Gateway ID"
-
