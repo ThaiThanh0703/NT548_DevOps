@@ -63,7 +63,7 @@ Resources:
     Properties: 
       Tags:
         - Key: Name
-          Value: "${Name}-igw"
+          Value: !Sub "${Name}-igw" 
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -88,18 +88,15 @@ Resources:
           Value: !Sub "${Name}-default-sg"
 
 Outputs:
-  VPCID:
+  VPC:
     Value: !Ref VPC
-    Description: "ID of the created VPC"
-
-  PublicSubnetID:
+    Description: "VPC ID"
+  PublicSubnetId:
     Value: !Ref PublicSubnet
-    Description: "ID of the public subnet"
-
-  PrivateSubnetID:
+    Description: "Public Subnet ID"
+  PrivateSubnetId:
     Value: !Ref PrivateSubnet
-    Description: "ID of the private subnet"
-
-  InternetGatewayID:
+    Description: "Private Subnet ID"
+  InternetGatewayId:
     Value: !Ref InternetGateway
-    Description: "ID of the Internet Gateway"
+    Description: "Internet Gateway ID"

@@ -3,7 +3,7 @@
 1. **Clone the Repository**
 ```sh
 git clone https://github.com/ThaiThanh0703/NT548_DevOps.git
-cd  Labs/Lab1/Clouformation
+cd  NT548_Devops/Labs/Lab1/Cloudformation
 ```
 
 2. **Apply Cloudformation code**
@@ -13,7 +13,7 @@ cd  Labs/Lab1/Clouformation
          ```
       2. Create S3 Bucket to store CloudFormation template file:
          ```
-         aws s3api create-bucket --bucket group23-s3 --region us-east-1 --create-bucket-configuration LocationConstraint=us-east-1
+         aws s3api create-bucket --bucket group23-s3 --region us-east-1 
          ```
       3. Upload all file template to S3 Bucket:
          ```

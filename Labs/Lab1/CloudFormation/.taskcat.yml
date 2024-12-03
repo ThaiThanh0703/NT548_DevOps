@@ -1,0 +1,11 @@
+project:
+  name: group23-lab2
+
+tests:
+  vpc-test:
+    template: main.yaml
+    parameters:
+      Param1: Value1
+      Param2: Value2
+    regions:
+      - us-east-1
