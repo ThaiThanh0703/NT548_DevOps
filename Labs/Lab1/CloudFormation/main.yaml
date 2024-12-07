@@ -1,12 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: NT548 Cloudformation
+Description: NT548 CloudFormation
 
 Parameters:
   BucketName:
     Type: String
     Description: The name of the S3 bucket
     Default: group23-s3
-
 
 Resources:
   # VPC Stack
@@ -34,6 +33,7 @@ Resources:
         PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
         PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
         NatGatewayId: !GetAtt NATGatewayStack.Outputs.NatGatewayId
+
 
   # Security Group Stack
   SecurityGroupStack:

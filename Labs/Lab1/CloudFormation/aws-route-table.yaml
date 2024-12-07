@@ -79,9 +79,8 @@ Resources:
 
 Outputs:
   PublicRouteTableID:
-    Description: "ID of the public route table"
     Value: !Ref RouteTableForPublic
-
+    Description: "Public Route Table ID"
   PrivateRouteTableID:
-    Description: "ID of the private route table"
     Value: !Ref RouteTableForPrivate
+    Description: "Private Route Table ID"
