@@ -31,4 +31,6 @@ jobs:
 
       # Runs unit tests
       - name: Run Go Unit Tests
-        run: echo Run Unit Tests!
+        run: 
+          echo Run Unit Tests!
+          pwd && ls -la
