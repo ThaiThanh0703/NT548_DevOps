@@ -1,6 +1,9 @@
-name: 'Terraform Destroy'
+name: "Terraform Destroy"
 
 on:
+  push:
+    branches:
+      - Lab
   workflow_dispatch:
     inputs:
       confirm_destroy:
