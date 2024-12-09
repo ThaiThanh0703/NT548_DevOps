@@ -183,16 +183,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Check-out git repository  
-        uses: actions/checkout@v4
-
       - name: Set Short SHA
         run: |
-          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
-        
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-4)" >> $GITHUB_ENV
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -206,7 +199,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.service }}
+          context: ./Project/application/${{ matrix.service }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ env.SHORT_SHA }}
