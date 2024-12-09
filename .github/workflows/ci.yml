@@ -107,3 +107,37 @@ jobs:
         with:
           sarif_file: sarif_files
 
+  TrivyFS:
+     # The type of runner that the job will run on
+     runs-on: ubuntu-latest
+
+     permissions:
+       contents: read 
+       security-events: write 
+       actions: read
+ 
+     # Steps represent a sequence of tasks that will be executed as part of the job
+     steps:
+       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check-out git repository  
+        uses: actions/checkout@v4
+ 
+       # Snyk check 
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
+       
+          # Upload SARIF file       
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+       
+
+
+
