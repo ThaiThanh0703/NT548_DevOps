@@ -216,16 +216,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Use matrix to build multi images
-    strategy:
-      matrix:
-        service:
-          - auth-service
-          - gateway
-          - profile-service
-          - task-service
-          - todo-fe
-
     permissions:
        contents: read 
        security-events: write 
@@ -243,7 +233,7 @@ jobs:
           image-ref: '${{ secrets.DOCKER_USERNAME }}/todo-fe'
           format: 'sarif'
           output: 'trivy-image-results.sarif'
-          severity: 'CRITICAL,HIGH'
+         # severity: 'CRITICAL,HIGH'
 
       - run: |
           pwd
