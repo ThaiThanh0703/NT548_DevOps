@@ -97,6 +97,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: monitor
+        working-directory: ../..
 
       - name: Create SARIF directory and move SARIF files
         run: |
