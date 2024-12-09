@@ -79,7 +79,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high --sarif-file-output=snyk_check.sarif
+          args: ./ --all-projects --severity-threshold=high --sarif-file-output=snyk_check.sarif
 
       - run: |
           echo ${{ github.workspace }}
@@ -93,7 +93,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: code test --sarif
-          args: --sarif-file-output=snyk_code_test.sarif
+          args: ./ --all-projects --sarif-file-output=snyk_code_test.sarif
 
       - name: Create SARIF directory and move SARIF files
         run: |
