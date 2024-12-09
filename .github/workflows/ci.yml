@@ -1,0 +1,63 @@
+name: CI Pipeline to test, scan, package and build app
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "Lab" branch
+  push:
+    branches: [ "Project" ]
+    paths:
+      - '.github/workflows/**'
+      - 'Project/application/**'
+  pull_request:
+    branches: [ "Project" ]
+    paths:
+      - '.github/workflows/**'
+      - 'Project/application/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Set default working directory to application for ci pipeline
+defaults:
+  run:
+    working-directory: ./Project/application
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains jobs to test, scan, package and build app
+  TestAndScan:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check-out git repository  
+        uses: actions/checkout@v4
+
+      # Runs unit tests
+      - name: Run Go Unit Tests
+        run: |
+          echo Run Unit Tests!
+          pwd && ls -la
+
+      # Setup sonar-scanner    
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v8
+  
+      # Code Analysis with SonarCloud  
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.host.url=${{ secrets.SONAR_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.sources=./
+            -Dsonar.verbose=true
+
