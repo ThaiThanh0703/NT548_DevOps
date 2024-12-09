@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ThaiThanh0703/NT548_DevOps.git
+    path: Project/k8s-manifests/deploy/
+    targetRevision: Project
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
