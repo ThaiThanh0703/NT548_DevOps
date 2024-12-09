@@ -38,7 +38,7 @@ jobs:
 
       # Runs unit tests
       - name: Run Go Unit Tests
-        run: 
+        run: |
           echo Run Unit Tests!
           pwd && ls -la
 
@@ -48,12 +48,11 @@ jobs:
   
       # Code Analysis with SonarCloud  
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarqube-scan-action@v4
         env:
           #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: application
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
