@@ -83,6 +83,7 @@ jobs:
 
       - run: |
           echo ${{ github.workspace }}
+          pwd
       
       # Snyk code test    
       - name: Run Snyk code test
