@@ -79,30 +79,12 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: ./ --all-projects --severity-threshold=high --sarif-file-output=snyk_check.sarif
+          args: ./ --all-projects --severity-threshold=high --sarif-file-output=./snyk_check.sarif
 
-      - run: |
-          echo ${{ github.workspace }}
-          pwd
       
-      # Snyk code test    
-      - name: Run Snyk code test
-        uses: snyk/actions/golang@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: code test --sarif
-          args: ./ --all-projects --sarif-file-output=snyk_code_test.sarif
-
-      - name: Create SARIF directory and move SARIF files
-        run: |
-          mkdir sarif_files &&
-          mv snyk_check.sarif snyk_code_test.sarif sarif_files/
-
       # Upload SARIF file    
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: sarif_files
+          sarif_file: snyk_check.sarif
 
