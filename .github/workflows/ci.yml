@@ -183,6 +183,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+
+      - run: |
+          pwd
+          ls -la
       - name: Set Short SHA
         run: |
           echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-4)" >> $GITHUB_ENV
@@ -199,7 +203,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.service }}
+          context: ./Project/application/${{ matrix.service }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ env.SHORT_SHA }}
