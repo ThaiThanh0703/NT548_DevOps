@@ -26,7 +26,7 @@ defaults:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains jobs to test, scan, package and build app
-  TestAndScan:
+  TestAndSonarScan:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -60,4 +60,54 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=./
             -Dsonar.verbose=true
+
+
+  SnykSCA:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check-out git repository  
+        uses: actions/checkout@v4
+
+      # Snyk check 
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/golang@master
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --sarif-file-output=snyk_check.sarif
+
+      # Snyk code test    
+      - name: Run Snyk code test
+        uses: snyk/actions/golang@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: code test --sarif
+          args: --sarif-file-output=snyk_code_test.sarif
+
+      - name: Run Snyk monitor
+        uses: snyk/actions/golang@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+
+      - name: Create SARIF directory and move SARIF files
+        run: |
+          mkdir sarif_files &&
+          mv snyk_check.sarif snyk_code_test.sarif sarif_files/
+
+
+
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif_files
 
