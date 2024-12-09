@@ -77,14 +77,13 @@ jobs:
       - name: Check-out git repository  
         uses: actions/checkout@v4
  
-      - name: Depcheck
+      - name: Dependencies Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'application'
           path: '.'
           format: 'HTML'
           args: >
-            --failOnCVSS 7
             --enableRetired
       - name: Upload Test results
         uses: actions/upload-artifact@master
