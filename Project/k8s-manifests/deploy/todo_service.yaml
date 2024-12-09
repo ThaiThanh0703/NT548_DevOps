@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,9 +17,15 @@ spec:
     spec:
       containers:
       - name: todo-fe
-        image: phuochovan/todo-fe:latest
+        image: "phuochovan/todo-fe:${IMAGE_TAG}"  # Sử dụng biến môi trường
         ports:
         - containerPort: 80
+        env:
+        - name: IMAGE_TAG
+          valueFrom:
+            configMapKeyRef:
+              name: todo-fe-config
+              key: IMAGE_TAG
 ---
 apiVersion: v1
 kind: Service
