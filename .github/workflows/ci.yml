@@ -81,6 +81,9 @@ jobs:
         with:
           args: --severity-threshold=high --sarif-file-output=snyk_check.sarif
 
+      - run: |
+          echo ${{ github.workspace }}
+      
       # Snyk code test    
       - name: Run Snyk code test
         uses: snyk/actions/golang@master
