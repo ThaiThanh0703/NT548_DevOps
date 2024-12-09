@@ -99,7 +99,7 @@ jobs:
       - name: Create SARIF directory and move SARIF files
         run: |
           mkdir sarif_files &&
-          mv ./snyk_check.sarif ./snyk_code_test.sarif sarif_files/    
+          ls -la ../..
       
       # Upload SARIF file    
       - name: Upload result to GitHub Code Scanning
