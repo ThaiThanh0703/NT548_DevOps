@@ -176,7 +176,6 @@ jobs:
       matrix:
         service:
           - auth-service
-          - gateway
           - profile-service
           - task-service
           - todo-fe
@@ -213,7 +212,7 @@ jobs:
 
   ScanDockerImages:
     
-   # needs: [DockerBuildAndPush]
+    needs: [DockerBuildAndPush]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -222,11 +221,10 @@ jobs:
       matrix:
         service:
           - auth-service
-          - gateway
           - profile-service
           - task-service
           - todo-fe
-
+      max-parallel: 1
     permissions:
        contents: read 
        security-events: write 
@@ -241,9 +239,9 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ secrets.DOCKER_USERNAME }}/todo-fe'
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest'
           format: 'sarif'
-          output: 'trivy-image-results.sarif'
+          output: 'trivy-image-${{ matrix.service }}-results.sarif'
           severity: 'CRITICAL,HIGH'
 
       - run: |
@@ -254,7 +252,7 @@ jobs:
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-image-results.sarif'
+          sarif_file: 'trivy-image-${{ matrix.service }}-results.sarif'
 
 
       
