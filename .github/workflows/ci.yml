@@ -176,23 +176,21 @@ jobs:
       matrix:
         service:
           - auth-service
-          - gateway
           - profile-service
           - task-service
           - todo-fe
+      max-parallel: 1
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+
+       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check-out git repository  
         uses: actions/checkout@v4
 
       - name: Set Short SHA
         run: |
-          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
-        
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-4)" >> $GITHUB_ENV
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -206,13 +204,60 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.service }}
+          context: ./Project/application/${{ matrix.service }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ env.SHORT_SHA }}
             ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest
 
-     
+  ScanDockerImages:
+    
+    needs: [DockerBuildAndPush]
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Use matrix to build multi images
+    strategy:
+      matrix:
+        service:
+          - auth-service
+          - profile-service
+          - task-service
+          - todo-fe
+      max-parallel: 1
+    permissions:
+       contents: read 
+       security-events: write 
+       actions: read
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest'
+          format: 'sarif'
+          output: 'trivy-image-${{ matrix.service }}-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - run: |
+          pwd
+          ls -la 
+          ls -la ../..
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-image-${{ matrix.service }}-results.sarif'
+
+
+      
+
+
 
 
 
